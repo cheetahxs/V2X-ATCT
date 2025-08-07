@@ -1,0 +1,6 @@
+left1, main_road_3.txt, turn_left_1.txt,main_road_1.txt
+left2, main_road_3.txt, turn_left_2.txt,main_road_4.txt
+right1,main_road_2.txt, turn_right_1.txt,main_road_1.txt
+right2,main_road_2.txt, turn_right_2.txt,main_road_4.txt
+down1,main_road_5.txt, turn_left_2.txt,main_road_6.txt
+down2,main_road_5.txt, turn_right_3.txt,main_road_7.txt

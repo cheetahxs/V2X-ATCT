@@ -1,0 +1,8 @@
+left1,main_road_1.txt, turn_left_1.txt
+right1, main_road_1.txt, turn_right_1.txt
+right2, main_road_1.txt, main_road_2.txt, turn_right_2.txt
+right3, main_road_1.txt, main_road_2.txt, main_road_3.txt, turn_right_3.txt
+left2, main_road_1.txt, main_road_2.txt, main_road_3.txt, turn_left_2.txt
+right4, main_road_1.txt, main_road_2.txt, main_road_3.txt, main_road_4.txt, turn_right_4.txt
+right5, main_road_1.txt, main_road_2.txt, main_road_3.txt, main_road_4.txt, main_road_5.txt, turn_right_5.txt
+left3, main_road_1.txt, main_road_2.txt, main_road_3.txt, main_road_4.txt, main_road_5.txt, turn_left_3.txt
