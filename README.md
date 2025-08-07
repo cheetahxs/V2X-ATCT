@@ -1,9 +1,6 @@
 # V2X-ATCT
 Repository provides the code of V2X-ATCT project.
 
-The code can be downloaded at:
-https://drive.google.com/file/d/150XAYxYROtLgCELnb45M3uaYXvxAsMrP/view?usp=sharing
-
 ## Installation
 
 Follow the steps below to complete the installation.
