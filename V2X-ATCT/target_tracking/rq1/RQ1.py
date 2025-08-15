@@ -521,8 +521,17 @@ def args_parser():
                         )
     parser.add_argument('--insert_time', type=int, required=True,
                         )
-    parser.add_argument('--v2x_dataset_path', type=str, required=True,
+    parser.add_argument('--system', type=str, required=False,
                         )
+    parser.add_argument('--select_seed_num', type=int, required=False,
+                        )
+    parser.add_argument('--driving_behaviour', type=str, required=False,
+                        )
+    parser.add_argument('--speed', type=int, required=False,
+                        )
+    parser.add_argument('--carnum', type=int, required=False,
+                        )
+
     args = parser.parse_args()
     return args
 
