@@ -73,12 +73,26 @@ def gen_scene(
     return True
 
 
+
 def args_parser():
     parser = argparse.ArgumentParser(description="demo command")
     parser.add_argument('--save_path', type=str, required=True,
                         )
     parser.add_argument('--scene_num', type=int, required=True,
                         )
+    parser.add_argument('--driving_behaviour', type=str, required=False,
+                        )
+    parser.add_argument('--tracknum', type=int, required=False,
+                        )
+    parser.add_argument('--vehicle_speed', type=int, required=False,
+                        )
+    # parser.add_argument('--road_num', type=int, required=False,
+    #                     )
+    parser.add_argument('--carnum', type=int, required=False,
+                        )
+
+    
+
     
     args = parser.parse_args()
     return args
