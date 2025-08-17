@@ -140,7 +140,9 @@ def gen_data(
     save_path='/V2X-ATCT/target_tracking/rq2/result',
     scene = 1,
     sharding = 30,
-    gen_seed_num = 5
+    gen_seed_num = 5,
+    carnum=3,
+    speed=60
 ):
 
     now = datetime.now()
@@ -151,7 +153,7 @@ def gen_data(
     save_path_guide = os.path.join(save_path,f'guide/{formatted}_seeds')
     save_path_baseline = os.path.join(save_path,'baseline')
     
-    save_dir1,time1,save_dir2,time2 = gen_single_data(scene_num=scene,sharding=sharding,save_path_baseline=save_path_baseline,save_path_guide=save_path_guide,gen_seed_num=gen_seed_num)
+    save_dir1,time1,save_dir2,time2 = gen_single_data(scene_num=scene,sharding=sharding,save_path_baseline=save_path_baseline,save_path_guide=save_path_guide,gen_seed_num=gen_seed_num,carnum=carnum,speed=speed)
 
 
     return save_path_guide,save_dir2
@@ -162,6 +164,8 @@ def gen_all_data(
     gen_time = 9,
     sharding = 31,
     gen_seed_num = 5,
+    speed=60,
+    carnum=3
 ):
 
     now = datetime.now()
@@ -201,7 +205,9 @@ def gen_single_data(
                     save_path_guide='',
                     save_path_baseline = '',
                     sharding = 30,
-                    gen_seed_num = 3
+                    gen_seed_num = 3,
+                    carnum=3,
+                    speed=60
                       ):
 
     actions = ['overtake','followcar','turning']
@@ -227,33 +233,37 @@ def gen_single_data(
     print(action)
     # return
 
-    
+    if speed==60:
+          dx_val=0.3,dy_val=0.3
+    else :
+          dx_val=0.3 + (speed-30)/200
+          dx_val=0.3 + (speed-30)/200
     
     if action == 'overtake':
 
             print('overtake')
-            save_dir1,time1,index_list = overtake.main(i=scene_num,save_path=save_path_guide,gen_data_for_sharding=False,sharding=sharding)
-            save_dir2,time2,index_list = overtake.main(i=scene_num,save_path=save_path_baseline,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list)
+            save_dir1,time1,index_list = overtake.main(i=scene_num,save_path=save_path_guide,gen_data_for_sharding=False,sharding=sharding,speed=speed,car_num=carnum)
+            save_dir2,time2,index_list = overtake.main(i=scene_num,save_path=save_path_baseline,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list,speed=speed,car_num=carnum)
             for index in range(gen_seed_num-1):
-                overtake.main(i=scene_num,save_path=save_path_guide,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list)
+                overtake.main(i=scene_num,save_path=save_path_guide,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list,speed=speed,car_num=carnum)
 
 
     elif action == 'followcar':
         
             print('followcar')
-            save_dir1,time1,index_list = followcar.main(i=scene_num,save_path=save_path_guide,gen_data_for_sharding=False,sharding=sharding)
-            save_dir2,time2,index_list = followcar.main(i=scene_num,save_path=save_path_baseline,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list)
+            save_dir1,time1,index_list = followcar.main(i=scene_num,save_path=save_path_guide,gen_data_for_sharding=False,sharding=sharding,speed=speed,car_num=carnum)
+            save_dir2,time2,index_list = followcar.main(i=scene_num,save_path=save_path_baseline,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list,speed=speed,car_num=carnum)
             for index in range(gen_seed_num-1):
-                followcar.main(i=scene_num,save_path=save_path_guide,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list)
+                followcar.main(i=scene_num,save_path=save_path_guide,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list,speed=speed,car_num=carnum)
 
 
     elif action == 'turning':
         
-            save_dir1,time1,index_list,start_ratio = turning.main(i=scene_num,save_path=save_path_guide,gen_data_for_sharding=False,sharding=sharding)
+            save_dir1,time1,index_list,start_ratio = turning.main(i=scene_num,save_path=save_path_guide,gen_data_for_sharding=False,sharding=sharding,speed=speed,car_num=carnum)
             # print(index_list)
-            save_dir2,time2,index_list,start_ratio = turning.main(i=scene_num,save_path=save_path_baseline,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list,start_ratio=start_ratio,gen_data_for_sharding=False)
+            save_dir2,time2,index_list,start_ratio = turning.main(i=scene_num,save_path=save_path_baseline,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list,start_ratio=start_ratio,gen_data_for_sharding=False,speed=speed,car_num=carnum)
             for index in range(gen_seed_num-1):
-                turning.main(i=scene_num,save_path=save_path_guide,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list,start_ratio=start_ratio,gen_data_for_sharding=False)
+                turning.main(i=scene_num,save_path=save_path_guide,gen_data_for_base_line=False,sharding=sharding,index_list_for_baseline=index_list,start_ratio=start_ratio,gen_data_for_sharding=False,speed=speed,car_num=carnum)
     else :
         print('error')
         raise TypeError
@@ -316,11 +326,15 @@ def gen_data_and_test(
         save_path_root='./V2X-ATCT/target_tracking/rq2/result',
         scene_num = 9,
         sharding = 31,
+        select_seed_num=1,
+        insert_time=1,
+        speed=60,
+        carnum=3
         
 
 ):  
     if only_test == False:
-        guide_list,baseline_list,time,scene_list = gen_all_data(save_path_root=save_path_root,gen_time=scene_num,sharding=sharding,gen_seed_num=seed_num)
+        guide_list,baseline_list,time,scene_list = gen_all_data(save_path_root=save_path_root,gen_time=scene_num,sharding=sharding,gen_seed_num=seed_num,carnum=carnum,speed=speed)
 
     print('guide_list',guide_list)
     print('baseline_list',baseline_list)
@@ -612,7 +626,9 @@ if __name__ == '__main__':
 
 
     seed_num = opt.seed_num
+    carnum = opt.carnum
+    speed = opt.speed
 
-    gen_data_and_test(save_path_root=save_path,seed_num=seed_num)
+    gen_data_and_test(save_path_root=save_path,seed_num=seed_num,carnum=carnum,speed=speed)
 
    

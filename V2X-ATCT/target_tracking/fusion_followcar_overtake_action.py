@@ -40,7 +40,7 @@ def gen_data_base_on_changed_data(i=1,
         # number = 0,
         gen_all_flag=False,
          v2x_dataset_path = './V2X-ATCT/data/v2x_dataset',
-
+        carnum=3,
          ): 
     
     now = datetime.now()
@@ -154,7 +154,7 @@ def gen_data_base_on_changed_data(i=1,
             if transformation == "insert":
                 
                 success_flag, v2x_ego_id, v2x_cp_id = \
-                trans.vehicle_insert_with_position_and_degree(ego_info,cp_info,position,car_degree = rz_degree,objs_index=3)
+                trans.vehicle_insert_with_position_and_degree(ego_info,cp_info,position,car_degree = rz_degree,objs_index=carnum)
                 
             
             # if not success_flag:
@@ -193,6 +193,7 @@ def main(i=1,
         sharding=30,
         gen_data_for_base_line = False,
         index_list_for_baseline = [],
+        car_num=3,
          ): 
     
  
@@ -317,7 +318,7 @@ def main(i=1,
             if transformation == "insert":
                 
                 success_flag, v2x_ego_id, v2x_cp_id = \
-                trans.vehicle_insert_with_position_and_degree(ego_info,cp_info,position,car_degree = rz_degree,objs_index=3)
+                trans.vehicle_insert_with_position_and_degree(ego_info,cp_info,position,car_degree = rz_degree,objs_index=car_num)
                 
             
             if not success_flag:

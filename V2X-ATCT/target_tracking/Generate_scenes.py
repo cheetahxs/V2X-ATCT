@@ -29,10 +29,13 @@ import target_tracking.rq2.RQ2 as rq2
 def gen_scene(
                     scene_num=1,#1-9
                     save_path='',
-                   
+                    action='Overtaking',
+                    track_num=1,
+                    speed=60,
+                    carnum=3
                       ):
 
-    actions = ['overtake','followcar','turning']
+    actions = ['Overtaking','Vehicle Following','Turning']
     
     # action = 'overtake'
 
@@ -48,24 +51,33 @@ def gen_scene(
         [2],
     ]
     scene_i_support = scene_action_support[scene_num-1]
-    random.seed()
-    action_i = random.choice(scene_i_support)
-    action = actions[action_i]
+    # random.seed()
+    # action_i = random.choice(scene_i_support)
+    # action = actions[action_i]
+
+    if action not in scene_i_support:
+          print("The driving behavior is not support in this scene!")
+          raise TypeError
+    
 
     print(action)
     # return
-
+    if speed==60:
+          dx_val=0.3,dy_val=0.3
+    else :
+          dx_val=0.3 + (speed-30)/200
+          dx_val=0.3 + (speed-30)/200
     
     
-    if action == 'overtake':
-            print('overtake')
-            save_dir1,time1,index_list = overtake.main(i=scene_num,save_path=save_path,gen_data_for_sharding=False)
-    elif action == 'followcar':
+    if action == 'Overtaking':
+            print('Overtaking')
+            save_dir1,time1,index_list = overtake.main(i=scene_num,save_path=save_path,gen_data_for_sharding=False,car_num=carnum,dx_val=dx_val,dy_val=dy_val)
+    elif action == 'Vehicle Following':
         
-            print('followcar')
-            save_dir1,time1,index_list = followcar.main(i=scene_num,save_path=save_path,gen_data_for_sharding=False)
-    elif action == 'turning':
-            save_dir1,time1,index_list,start_ratio = turning.main(i=scene_num,save_path=save_path,gen_data_for_sharding=False)  
+            print('Vehicle Following')
+            save_dir1,time1,index_list = followcar.main(i=scene_num,save_path=save_path,gen_data_for_sharding=False,car_num=carnum,dx_val=dx_val,dy_val=dy_val)
+    elif action == 'Turning':
+            save_dir1,time1,index_list,start_ratio = turning.main(i=scene_num,save_path=save_path,gen_data_for_sharding=False,car_num=carnum,dx_val=dx_val,dy_val=dy_val)  
     else :
         print('error')
         raise TypeError
@@ -109,5 +121,8 @@ if __name__ == '__main__':
 
 
     scene_num = opt.scene_num
+    action = opt.driving_behaviour
+    speed = opt.vehicle_speed
+    carnum = opt.carnum
 
-    gen_scene(save_path=save_path,scene_num=scene_num)
+    gen_scene(save_path=save_path,scene_num=scene_num,action=action,speed=speed,carnum=carnum)
