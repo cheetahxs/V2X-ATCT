@@ -180,7 +180,9 @@ def print_and_save(eval_results,
 def gen_all_data(
     SAVE_PATH_ROOT='./V2X-ATCT/target_tracking/rq1/result/',
     time=1,
-    v2x_dataset_path = ''
+    v2x_dataset_path = '',
+    carnum=3,
+    speed=60,
 ):
  
     now = datetime.now()
@@ -190,7 +192,7 @@ def gen_all_data(
     if not os.path.exists(SAVE_PATH):
         os.makedirs(SAVE_PATH)
     for i in range(1,10):
-        gen_single_data(scene_num=i,SAVE_PATH=SAVE_PATH,time = time,v2x_dataset_path=v2x_dataset_path)
+        gen_single_data(scene_num=i,SAVE_PATH=SAVE_PATH,time = time,v2x_dataset_path=v2x_dataset_path,carnum=carnum,speed=speed)
 
 
     return SAVE_PATH
@@ -217,7 +219,8 @@ def gen_data_and_test(
 def gen_single_data(
                     scene_num=1,#1-9
                     SAVE_PATH='',
-                    
+                    speed=60,
+                    carnum=3,
                     time = 2,
                     v2x_dataset_path = '/home/maji/Downloads/V2XTargetTracking-main/V2XGen-main/target_tracking/rq1/init_seeds/2/v2x_dataset'
                       ):
@@ -242,16 +245,22 @@ def gen_single_data(
     action = actions[action_i]
 
     SCENE_NUM = scene_num
+
+    if speed==60:
+          dx_val=0.3,dy_val=0.3
+    else :
+          dx_val=0.3 + (speed-30)/200
+          dx_val=0.3 + (speed-30)/200
     
     if action == 'overtake':
-        save_dir,time = overtake.gen_data_base_on_changed_data(i=SCENE_NUM,save_path=SAVE_PATH,gen_all_flag=True,v2x_dataset_path=v2x_dataset_path)
+        save_dir,time = overtake.gen_data_base_on_changed_data(i=SCENE_NUM,save_path=SAVE_PATH,gen_all_flag=True,v2x_dataset_path=v2x_dataset_path,carnum=carnum,dx_val=dx_val,dy_val=dy_val)
         
     elif action == 'followcar':          
-        save_dir,time = followcar.gen_data_base_on_changed_data(i=SCENE_NUM,save_path=SAVE_PATH,gen_all_flag=True,v2x_dataset_path=v2x_dataset_path)
+        save_dir,time = followcar.gen_data_base_on_changed_data(i=SCENE_NUM,save_path=SAVE_PATH,gen_all_flag=True,v2x_dataset_path=v2x_dataset_path,carnum=carnum,dx_val=dx_val,dy_val=dy_val)
         
 
     elif action == 'turning':
-        save_dir,time = turning.gen_data_base_on_changed_data(i=SCENE_NUM,save_path=SAVE_PATH,gen_all_flag=True,insert_time=time,v2x_dataset_path=v2x_dataset_path)
+        save_dir,time = turning.gen_data_base_on_changed_data(i=SCENE_NUM,save_path=SAVE_PATH,gen_all_flag=True,insert_time=time,v2x_dataset_path=v2x_dataset_path,carnum=carnum,dx_val=dx_val,dy_val=dy_val)
         
     return True 
 
@@ -415,11 +424,13 @@ def gen_data_and_npy(
         fusion_method = 'no_fusion_keep_all',
         only_test = False,
         time = 1,
-        v2x_dataset_path = ''
+        v2x_dataset_path = '',
+        carnum=3,
+        speed=60
 
 ):  
     if only_test == False:
-        data_dir = gen_all_data(time=time,SAVE_PATH_ROOT='./V2X-ATCT/target_tracking/rq1/result/',v2x_dataset_path=v2x_dataset_path)
+        data_dir = gen_all_data(time=time,SAVE_PATH_ROOT='./V2X-ATCT/target_tracking/rq1/result/',v2x_dataset_path=v2x_dataset_path,carnum=carnum,speed=speed)
 
     trans_data_to_npy(data_dir=data_dir,config_dir=config_dir,fusion_method=fusion_method)
     return data_dir
@@ -428,10 +439,12 @@ def gen_data_and_npy(
     
 
 def main(save_path_dir = './V2X-ATCT/target_tracking/rq1/result/',
-        #  select_seed_num = 1,
+         select_seed_num = 1,
          gen_seed_num = 5,
          insert_time = 3,
-         v2x_dataset_path = ''
+         v2x_dataset_path = '',
+         speed=60,
+         carnum=3
          ):
 
     now = datetime.now()
@@ -444,7 +457,7 @@ def main(save_path_dir = './V2X-ATCT/target_tracking/rq1/result/',
         
         data_list = []
         for index in range(0,gen_seed_num):
-            data_dir = gen_data_and_npy(time=i+1,v2x_dataset_path=v2x_dataset)
+            data_dir = gen_data_and_npy(time=i+1,v2x_dataset_path=v2x_dataset,carnum=carnum,speed=speed)
             data_list.append(data_dir)
 
 
@@ -546,4 +559,8 @@ if __name__ == '__main__':
     gen_seed_num = opt.gen_seed_num
     insert_time = opt.insert_time
 
-    main(save_path_dir=save_path_dir,v2x_dataset_path=v2x_dataset_path,gen_seed_num=gen_seed_num,insert_time=insert_time)
+    speed = opt.speed
+    carnum = opt.carnum
+
+
+    main(save_path_dir=save_path_dir,v2x_dataset_path=v2x_dataset_path,gen_seed_num=gen_seed_num,insert_time=insert_time,speed=speed,carnum=carnum)
