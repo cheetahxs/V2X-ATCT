@@ -25,6 +25,7 @@ Follow the steps in the README.md under the DMSTrack directory to complete the i
 ## Quick Start
 
 You can run the program to generate the scenario, or use visual graphic operation.
+
 Use the following command to start the server. The visual URL is: http://127.0.0.1:5000.
 ```shell
 $ python Visualization/app.py 
