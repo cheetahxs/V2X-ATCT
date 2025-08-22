@@ -25,7 +25,12 @@ Follow the steps in the README.md under the DMSTrack directory to complete the i
 ## Quick Start
 
 You can run the program to generate the scenario, or use visual graphic operation.
+Use the following command to start the server. The visual URL is: http://127.0.0.1:5000.
+```shell
+$ python Visualization/app.py 
+```
 
+Or directly use the command to execute scenario generation.
 ```shell
 $ python V2X-ATCT/target_tracking/Generate_scenes.py --save_path ${save_path} --scene_num ${scene_num}
 ```
