@@ -13,8 +13,8 @@ V2X-ATCT
 │   ├── data/
 │   │   │   ├── semantic
 │   │   │   ├── v2x_dataset
-├── core/
-├── config/
+├── DMSTrack_master/
+├── Visualization/
 ├── ...
 ```
 
@@ -22,14 +22,15 @@ Download the semantic segmentation model (https://drive.google.com/file/d/1xD4jT
 
 ```
 V2X-ATCT
-├── third/
-│   ├── SalsaNext/
+├── V2X-ATCT/
+│   ├── third/
+│   │   ├── SalsaNext/
 │   │   │   ├── images
 │   │   │   ├── train
 │   │   │   ├── ...
-├── opencood/
-├── dist/
-├── ...
+│   ├── opencood/
+│   ├── dist/
+│   ├── ...
 ```
 
 ## **2. Installation**
