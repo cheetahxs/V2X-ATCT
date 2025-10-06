@@ -18,6 +18,20 @@ V2X-ATCT
 ├── ...
 ```
 
+Download the semantic segmentation model (https://drive.google.com/file/d/1xD4jT79LYXJlbsyzvVBvheYTO43UD6gj/view?usp=drive_link) and place it in the appropriate location, following the structure below:
+
+```
+V2X-ATCT
+├── third/
+│   ├── SalsaNext/
+│   │   │   ├── images
+│   │   │   ├── train
+│   │   │   ├── ...
+├── opencood/
+├── dist/
+├── ...
+```
+
 ## **2. Installation**
 
 Enter the directory containing the Dockerfile in the terminal, and run the following command to install the program.
