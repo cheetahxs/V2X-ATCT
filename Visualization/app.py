@@ -97,7 +97,7 @@ ROOT_DIR_exp = os.path.abspath(ROOT_DIR_exp)
 
 @app.route('/experimentres')
 def experimentres():
-    rq = request.args.get('rq', '1')  # 默认为 '1'
+    rq = request.args.get('rq', '1')  
     if rq == '1':
         ROOT_DIR_exp = os.path.join(project_root,'V2X-ATCT/target_tracking/rq1')
         ROOT_DIR_exp = os.path.abspath(ROOT_DIR_exp)
@@ -164,7 +164,7 @@ tasks = {}
 def start_task():
     data = request.get_json()
     
-    # 提取表单参数
+    
     scene = data.get('scene',1)
     driving_behaviour = data.get('driving_behaviour','Vehicle_Following')
     tracknum = data.get('tracknum',1)
@@ -175,10 +175,10 @@ def start_task():
     selectseeds = data.get('selectseeds',1)
     file_path = data.get('file_path','scene')
 
-    # 生成唯一任务 ID
+
     job_id = str(uuid.uuid4())
     
-    # 缓存任务参数
+
     tasks[job_id] = {
         'scene':int(scene),
         'driving_behaviour':driving_behaviour,
@@ -200,12 +200,12 @@ def output_page():
 
 @app.route('/stream')
 def stream_output():
-    # ✅ 先读取 job_id（在请求上下文中）
+    
     # print("stream")
     job_id = request.args.get('job_id')
 
     def generate():
-        # ✅ 使用外部传进来的 job_id
+    
         if not job_id:
             yield "data: ❌ lack job_id parameter\n\n"
             return
