@@ -77,29 +77,29 @@
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-form-product-1.html">
                        <i class="icon material-icons md-data_usage"></i>
-                        <span class="text">Generate Data</span>
+                        <span class="text">Scenario Generation</span>
                     </a>
                     <div class="submenu">
                         <!-- <a href="page-form-product-1.html">Add product 1</a> -->
-                        <a href="{{ url_for('gendata') }}">Generate V2X Scene</a>
+                        <a href="{{ url_for('gendata') }}">V2X Scenario Generation</a>
                         <!-- <a href="page-form-product-3.html">Add product 3</a>
                         <a href="page-form-product-4.html">Add product 4</a> -->
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-visibility"></i>
-                        <span class="text">Visualization</span>
+                        <span class="text">Scenario Data</span>
                     </a>
                     <div class="submenu">
                         <!-- <a href="page-products-list.html">Product List</a>
                         <a href="page-products-grid.html">Product grid</a>
                         <a href="page-products-grid-2.html">Product grid 2</a> -->
-                        <a href="{{ url_for('resultvis') }}">Show Results</a>
+                        <a href="{{ url_for('resultvis') }}">Show Data</a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-group_work"></i>
-                        <span class="text">Experiment</span>
+                        <span class="text">Experimental Module</span>
                     </a>
                     <div class="submenu">
                         <a href="{{ url_for('rq1') }}">RQ1</a>
@@ -109,16 +109,18 @@
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-pie_chart"></i>
-                        <span class="text">Experiment Result</span>
+                        <span class="text">Experimental Results</span>
                     </a>
                     <div class="submenu">
-                        <a href="{{ url_for('experimentres') }}">Show Experiment Result List</a>
+                        <a href="{{ url_for('experimentres', rq=1) }}">Show RQ1 Experimental Results</a>
+                        <a href="{{ url_for('experimentres', rq=2) }}">Show RQ2 Experimental Results</a>
                         <!-- <a href="page-orders-2.html">Order list 2</a>
                         <a href="page-orders-detail.html">Order detail</a> -->
                     </div>
                 </li>
-                             
                 
+                
+             
                 
                 
             </ul>
@@ -186,7 +188,7 @@
             <div class="row">
                 <div class="col-6">
                     <div class="content-header">
-                        <h2 class="content-title">RQ2 config and start</h2>
+                        <h2 class="content-title">Configuration and Execution of RQ2</h2>
                         <!-- <div>
                             <button class="btn btn-light rounded font-sm mr-5 text-body hover-up">Save to draft</button>
                             <button class="btn btn-md rounded font-sm hover-up">Publich</button>
@@ -220,7 +222,7 @@
 
                                     <div class="mb-4">
                                         <label class="form-label">Driving Behaviour Selection</label>
-                                        <select class="form-select" name="drivingbehaviour" id="drivingbehaviour">
+                                        <select class="form-select" name="driving_behaviour" id="driving_behaviour">
                                             <!-- <option>Only Turning </option>
                                             <option>Only Overtaking </option>
                                             <option>Only Vehicle Following </option>
@@ -252,7 +254,7 @@
                                         <div class="mb-4">
                                        
                                         <input type="range" id="slider2" min="1" max="100" value="3" style="width: 390px;" name="seednum" id="seednum">
-                                        <p>Seed Number: <span id="valueDisplay2">3</span></p>
+                                        <p>Seed Count: <span id="valueDisplay2">3</span></p>
 
                                         </div>
                                     </div>
@@ -263,7 +265,7 @@
                                         <div class="mb-4">
                                        
                                         <input type="range" id="slider3" min="1" max="100" value="1" style="width: 390px;" name="selectseeds" id="selectseeds">
-                                        <p>Select Seed Number: <span id="valueDisplay3">1</span></p>
+                                        <p>Selected Seed Count: <span id="valueDisplay3">1</span></p>
 
                                         </div>
                                     </div>
@@ -301,19 +303,20 @@
 
                                 
                                 <div class="mb-4">
-                                        <label class="form-label">Car Model Number</label>
+                                        <label class="form-label">Car Model</label>
                                         <select class="form-select" name="carnum" id="carnum">
+                                            <option> 0 </option>
                                             <option> 1 </option>
-                                            <!-- <option> 2 </option>
+                                            <option> 2 </option>
                                             <option> 3 </option>
-                                            <option> 4 </option>
+                                            <!-- <option> 4 </option>
                                             <option> 5 </option>
                                             <option> 6 </option> -->
                                         </select>
                                 </div>
 
                                 </div>
-
+                                 <input type="hidden" name="file_path" value="rq2">
                                 
 
 
@@ -339,13 +342,55 @@
 
                             <div>
                             
-                            <button id="showProgressBtn" class="btn btn-md rounded font-sm hover-up right-div">Start</button>
+                            <!-- <button id="showProgressBtn" class="btn btn-md rounded font-sm hover-up right-div">Start</button>
                             <div></div>
-                            <button id="showProgressBtn2" class="btn btn-light rounded font-sm mr-5 text-body hover-up right-div">Save Config</button>
+                            <button id="showProgressBtn2" class="btn btn-light rounded font-sm mr-5 text-body hover-up right-div">Save Config</button> -->
+                            <button class="btn btn-md rounded font-sm hover-up right-div" onclick="submitForm()">Generate</button>
                             </div>
                             
 
                             <script>
+                                async function submitForm() {
+                            
+                            const popup = window.open('', '_blank');
+                          
+                            const form = document.getElementById('configForm');
+                            
+                            const formData = new FormData(form);
+                          
+                            const data = Object.fromEntries(formData);  // { task_name: "xxx", ip_addr: "..." }
+                            
+                           
+                            
+                            try {
+                               
+                                const resp = await fetch('/start-task', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify(data)
+                                });
+                                // alert(resp.status)
+                                
+                                
+                                const result = await resp.json();
+                                // alert(result.job_id)
+                                
+                                // console.log(result.job_id)
+                                
+                                if (result.job_id) {
+                                    
+                                    // window.open(`/output?job_id=${result.job_id}`, '_blank');
+                                    popup.location = `/output?job_id=${result.job_id}`;
+                                } else {
+                                    alert("任务启动失败: " + result.error);
+                                }
+                            } catch (err) {
+                                console.error("Fetch error:", err); 
+                                alert("连接失败: " + err.message);
+                            }
+                        }
                             
                             const slider2 = document.getElementById('slider2');
                                     const valueDisplay2 = document.getElementById('valueDisplay2');
@@ -398,41 +443,41 @@
                                         
 
                
-                            document.getElementById('showProgressBtn').addEventListener('click', async function() {
+                            // document.getElementById('showProgressBtn').addEventListener('click', async function() {
                   
-                                const formData = new FormData(document.getElementById('configForm'));
+                            //     const formData = new FormData(document.getElementById('configForm'));
 
-                                try {
+                            //     try {
                   
-                                    const response = await fetch('/submit_genrq2', {
-                                        method: 'POST',
-                                        body: formData  
-                                    });
+                            //         const response = await fetch('/submit_genrq2', {
+                            //             method: 'POST',
+                            //             body: formData  
+                            //         });
 
-                                    const result = await response.json();
+                            //         const result = await response.json();
 
-                                    if (result.success) {
-                                        alert('✅ The configuration has been submitted successfully!\n' + result.message);
-                                    } else {
-                                        alert('❌ Submission Failed:\n' + result.message);
-                                    }
+                            //         if (result.success) {
+                            //             alert('✅ The configuration has been submitted successfully!\n' + result.message);
+                            //         } else {
+                            //             alert('❌ Submission Failed:\n' + result.message);
+                            //         }
 
-                                } catch (error) {
+                            //     } catch (error) {
        
-                                    alert('❌ Request Failed. Please check your network connection!');
-                                    console.error('Request Error:', error);
-                                }
-                            });
+                            //         alert('❌ Request Failed. Please check your network connection!');
+                            //         console.error('Request Error:', error);
+                            //     }
+                            // });
 
         
-                            document.getElementById('showProgressBtn2').addEventListener('click', function() {
-                                const savePath = document.getElementById('savePath').value;
-                                if (savePath) {
-                                    alert('💾 Configuration saved to:\n' + savePath);
-                                } else {
-                                    alert('Please enter the save path!');
-                                }
-                            });
+                            // document.getElementById('showProgressBtn2').addEventListener('click', function() {
+                            //     const savePath = document.getElementById('savePath').value;
+                            //     if (savePath) {
+                            //         alert('💾 Configuration saved to:\n' + savePath);
+                            //     } else {
+                            //         alert('Please enter the save path!');
+                            //     }
+                            // });
 
                             </script>
 

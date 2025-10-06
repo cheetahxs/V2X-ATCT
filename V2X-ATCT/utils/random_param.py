@@ -31,7 +31,7 @@ def get_insert_location(v2x_info):
 
     is_valid = False
     while not is_valid:
-        pos_x = random.uniform(x_range[0], x_range[1])
+        pos_x = random.uniform(x_range[0], x_range[1])#均匀随机生成x坐标
         pos_y = random.uniform(y_range[0], y_range[1])
         print(pos_x, pos_y)
         if math.sqrt(pos_x**2 + pos_y**2) <= 100:

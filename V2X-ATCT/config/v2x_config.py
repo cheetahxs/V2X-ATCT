@@ -2,7 +2,7 @@ import os
 import utils.v2X_file as v2x
 
 # v2x_dataset_root = f"/home/software/V2V4Real_semantic/v2x_dataset"
-v2x_dataset_root = f"/home/maji/Downloads/V2X-ATCT/v2x_dataset"
+v2x_dataset_root = f"/home/maji/Downloads/V2XGen-main/v2x_dataset"
 dataset = "rq1"     # default dataset
 
 # ego

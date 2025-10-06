@@ -1,5 +1,5 @@
 import os , sys
-# sys.path.append("/home/maji/Downloads/V2XTargetTracking-main/V2XGen-main/")
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import copy
 import json
 import os.path

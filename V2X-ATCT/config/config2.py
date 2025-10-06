@@ -1,13 +1,23 @@
 import os
 import yaml
-
+from pathlib import Path
 
 class Config2:
     """
     Dataset config
     """
     def __init__(self, dataset="v2x_dataset", scene=1,dataset_path = ''):
-        with open("config/dataset_config.yml", "r") as config_file:
+        # with open("config/dataset_config.yml", "r") as config_file:
+        # 获取当前脚本所在的目录
+        current_dir = Path(__file__).parent  # config/ 目录
+        
+        # 构建配置文件的绝对路径
+        config_file = current_dir / "dataset_config.yml"  # 直接就在 config/ 下
+        
+        if not config_file.exists():
+            raise FileNotFoundError(f"Config file not found: {config_file}")
+        
+        with open(config_file, "r") as config_file:
             dataset_config = yaml.load(config_file, Loader=yaml.FullLoader)
 
         self.dataset_root = dataset_config.get("dataset_path", "/${your dataset path}")
@@ -32,9 +42,9 @@ class Config2:
             for i, v in index_dict.items():
                 if i < scene:
                     begin += v
-            self.begin_index = begin
-            # self.scene_data_num = index_dict[scene] - 1
-            self.scene_data_num = index_dict[scene] 
+            self.begin_index = begin#获取某个场景的索引
+            # self.scene_data_num = index_dict[scene] - 1#该场景的总数
+            self.scene_data_num = index_dict[scene] #该场景的总数
         # rq1 dataset
         elif dataset == "rq1":
             # 200 random data
@@ -44,7 +54,7 @@ class Config2:
         elif dataset == "rq_eval":
             dataset = "rq2/pre_trans_dataset"
             # dataset = "rq3/test_dataset"
-        # self.dataset_path = os.path.join(self.dataset_root, dataset)
+        # self.dataset_path = os.path.join(self.dataset_root, dataset)#路径结合
         self.dataset_path = dataset_path
 
         # data path

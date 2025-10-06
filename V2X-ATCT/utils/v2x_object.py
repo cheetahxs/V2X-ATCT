@@ -20,11 +20,11 @@ class V2XInfo:
         1. load vehicle's data and labels
         2. split road
         """
-        self.bg_index = bg_index 
+        self.bg_index = bg_index #加载的场景帧号
         self.is_ego = is_ego
         self.dataset_config = dataset_config
 
-        path_info = self.load_data_path()
+        path_info = self.load_data_path()#加载数据路径,即道路点云、场景点云、标签
 
         # read pcd data
         bg_pc = pcd_to_np(path_info['bg_path'])         # read background pcd from .pcd files
@@ -37,7 +37,7 @@ class V2XInfo:
         # road_pc, non_road_pc, road_label = road_split(bg_xyz, path_info['road_path'],
         #                                               path_info['road_label_path'])
         # print(path_info['param_path'])
-        param = load_yaml(path_info['param_path'])
+        param = load_yaml(path_info['param_path'])#读取pcd对应的yaml文件
 
         self.pc = bg_pc
         self.param = param
@@ -135,6 +135,7 @@ class V2XInfo:
         else:
             car_id = list(self.param['vehicles'].keys())[-1] + 1
 
+        # rz_degree = float(rz_degree)#避免出现标签为对象类型的情况
         car_dict = {
             'angle': [0.0, rz_degree, 0.0],
             'ass_id': ass_id,

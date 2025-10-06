@@ -2,9 +2,9 @@
 name: visualization
 
 yaml_parser: "load_voxel_params"
-root_dir: '/home/maji/Downloads/V2XGen-main/data/'
+root_dir: '/app/V2X-ATCT/data/'
+validate_dir: '/home/maji/Downloads/V2XGen-main/data/results/test/2025-03-19_12:28:21/'
 
-validate_dir: '/home/maji/Downloads/V2XTargetTracking-main/V2XGen-main/data/ori_data/scene4/'
 
 train_params:
   batch_size: &batch_size 4

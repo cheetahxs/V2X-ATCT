@@ -1,6 +1,7 @@
 import os
 import sys
-sys.path.append("/home/maji/Downloads/V2XTargetTracking-main/V2XGen-main/")
+sys.path.append("/app/V2X-ATCT")
+sys.path.append("/home/maji/Downloads/docker/V2X-ATCT/V2X-ATCT")
 import argparse
 from torch.utils.data import DataLoader
 
@@ -16,6 +17,7 @@ def vis_parser():
                         help='lidar color rendering mode, e.g. intensity,'
                              'z-value or constant.')
     parser.add_argument('--isSim', action='store_true')
+    parser.add_argument('--data', type=str,default='')
     opt = parser.parse_args()
     return opt
 
@@ -25,6 +27,9 @@ if __name__ == '__main__':
     opt = vis_parser()
     params = load_yaml(os.path.join(current_path,
                                     '../hypes_yaml/visualization.yaml'))
+    
+    data_path = os.path.join('/app/V2X-ATCT/target_tracking/generate_scene',opt.data)
+    params['validate_dir'] = data_path
 
     opencda_dataset = EarlyFusionVisDataset(params, visualize=True,
                                             train=False, isSim=opt.isSim)

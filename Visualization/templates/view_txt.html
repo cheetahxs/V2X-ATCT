@@ -32,29 +32,37 @@
         </div>
         <nav>
             <ul class="menu-aside">
+                <!-- <li class="menu-item active">
+                    <a class="menu-link" href="{{ url_for('index') }}"> <i class="icon material-icons md-home"></i>
+                        <span class="text">Home</span>
+                    </a>
+                </li> -->
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-form-product-1.html">
                        <i class="icon material-icons md-data_usage"></i>
-                        <span class="text">Generate Data</span>
+                        <span class="text">Scenario Generation</span>
                     </a>
                     <div class="submenu">
                         <!-- <a href="page-form-product-1.html">Add product 1</a> -->
-                        <a href="{{ url_for('gendata') }}">Generate V2X Scene</a>
+                        <a href="{{ url_for('gendata') }}">V2X Scenario Generation</a>
                         <!-- <a href="page-form-product-3.html">Add product 3</a>
                         <a href="page-form-product-4.html">Add product 4</a> -->
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-products-list.html"> <i class="icon material-icons md-visibility"></i>
-                        <span class="text">Visualization</span>
+                        <span class="text">Scenario Data</span>
                     </a>
                     <div class="submenu">
-                        <a href="{{ url_for('resultvis') }}">Show Results</a>
+                        <!-- <a href="page-products-list.html">Product List</a>
+                        <a href="page-products-grid.html">Product grid</a>
+                        <a href="page-products-grid-2.html">Product grid 2</a> -->
+                        <a href="{{ url_for('resultvis') }}">Show Data</a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-sellers-cards.html"> <i class="icon material-icons md-group_work"></i>
-                        <span class="text">Experiment</span>
+                        <span class="text">Experimental Module</span>
                     </a>
                     <div class="submenu">
                         <a href="{{ url_for('rq1') }}">RQ1</a>
@@ -64,18 +72,18 @@
                 </li>
                 <li class="menu-item has-submenu">
                     <a class="menu-link" href="page-orders-1.html"> <i class="icon material-icons md-pie_chart"></i>
-                        <span class="text">Experiment Result</span>
+                        <span class="text">Experimental Results</span>
                     </a>
                     <div class="submenu">
-                        <a href="{{ url_for('experimentres') }}">Show Experiment Result List</a>
+                        <a href="{{ url_for('experimentres', rq=1) }}">Show RQ1 Experimental Results</a>
+                        <a href="{{ url_for('experimentres', rq=2) }}">Show RQ2 Experimental Results</a>
                         <!-- <a href="page-orders-2.html">Order list 2</a>
                         <a href="page-orders-detail.html">Order detail</a> -->
                     </div>
                 </li>
                 
                 
-                
-               
+             
                 
                 
             </ul>

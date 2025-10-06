@@ -6,6 +6,10 @@ import utils.random_param as rand
 from logger import CLogger
 import rq1.baseline_transformation as baseline
 
+"""
+插入车辆，指定位置和汽车角度
+
+"""
 
 def vehicle_insert_with_position_and_degree(ego_info, cp_info,position,car_degree,objs_index=3):
     
@@ -20,7 +24,7 @@ def vehicle_insert_with_position_and_degree(ego_info, cp_info,position,car_degre
 
         
 
-        # position, rz_degree = rand.get_insert_location(ego_info)
+        # position, rz_degree = rand.get_insert_location(ego_info)#随机生成插入坐标/角度
         # position = [10,0]
         # get id to cut
         success_flag, ego_id, cp_id = insert.vehicle_insert(ego_info, cp_info, position, detection_flag=False, transformation="rotation",car_degree=car_degree,objs_index=objs_index)
@@ -59,7 +63,7 @@ def vehicle_insert(ego_info, cp_info, ego_info_baseline, cp_info_baseline):
 
         CLogger.info(f"try insert {count} times...")
 
-        position, rz_degree = rand.get_insert_location(ego_info)
+        position, rz_degree = rand.get_insert_location(ego_info)#随机生成插入坐标/角度
 
         # get id to cut
         success_flag, ego_id, cp_id = insert.vehicle_insert(ego_info, cp_info, position, True, transformation="rotation")

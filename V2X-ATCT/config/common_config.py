@@ -6,7 +6,7 @@ project_dir = "./"
 
 assets_dir = "{}/_assets".format(project_dir)
 # obj_dir_path = "{}/shapenet".format(assets_dir)
-obj_dir_path = "_assets/shapenet"
+obj_dir_path = "/app/V2X-ATCT/_assets/shapenet"
 obj_cp_dir = "{}/copy_paste".format(assets_dir)
 
 obj_filename = "models/model_normalized.gltf"

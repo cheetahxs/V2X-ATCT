@@ -1,0 +1,5 @@
+export PYTHONPATH=${PYTHONPATH}:/home/maji/Downloads/DMSTrack-master/DMSTrack/AB3DMOT
+export PYTHONPATH=${PYTHONPATH}:/home/maji/Downloads/DMSTrack-master/DMSTrack/AB3DMOT/Xinshuo_PyToolbox
+export PYTHONPATH=${PYTHONPATH}:/home/maji/Downloads/DMSTrack-master/DMSTrack/V2V4Real
+export PYTHONPATH=${PYTHONPATH}:/home/maji/Downloads/DMSTrack-master/DMSTrack
+python visualization.py 

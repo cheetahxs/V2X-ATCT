@@ -20,7 +20,7 @@ from build.mtest.core.pose_estimulation.pose_generator import tranform_mesh_by_p
 
 def vehicle_insert(ego_info, cp_info, position, detection_flag=False, gt_flag=False,
                    gt_degree=0, gt_box=None, transformation="insert",car_degree=0,objs_index=3):
-
+    
     ego_success_flag, ego_mesh, ego_insert_info, ego_combined_pc = insert_obj(ego_info, position, detection_flag, gt_flag, gt_degree, gt_box,manual_define_degree=True,car_degree=car_degree,objs_index=objs_index)
 
     if ego_success_flag:
@@ -32,14 +32,17 @@ def vehicle_insert(ego_info, cp_info, position, detection_flag=False, gt_flag=Fa
 
     cp_position = list(center_system_transform(position, ego_info.param['lidar_pose'], cp_info.param['lidar_pose']))[:2]
     
-
+   
     if ego_success_flag:
+      
         T_ego2cp = np.linalg.inv(cp_info.param["lidar_pose"]) @ ego_info.param["lidar_pose"]
+ 
         gt_mesh = ego_mesh.transform(T_ego2cp)
         cp_success_flag, cp_mesh, cp_insert_info, cp_combined_pc = insert_obj(cp_info, cp_position, False, True, cp_rz_degree, gt_mesh=gt_mesh,manual_define_degree=False,objs_index=objs_index)
     else:
         cp_success_flag, cp_mesh, cp_insert_info, cp_combined_pc = insert_obj(cp_info, cp_position, True, False,objs_index=objs_index)
 
+   
     occlusion_threshold = 0.9
     if ego_success_flag:
         for val in ego_insert_info["occ_rate"].values():
@@ -56,6 +59,7 @@ def vehicle_insert(ego_info, cp_info, position, detection_flag=False, gt_flag=Fa
     if not cp_success_flag and not ego_success_flag:
         CLogger.info("insert false!")
         return False, -1, -1
+
     
     if ego_success_flag:
         if ego_combined_pc is not None:
@@ -77,7 +81,7 @@ def vehicle_insert(ego_info, cp_info, position, detection_flag=False, gt_flag=Fa
         else:
             ego_id = ego_info.update_param_for_insert(ego_insert_info["extent"], ego_insert_info["center"],
                                                       -ego_insert_info["rz_degree"])
-
+   
     if cp_success_flag:
         if cp_combined_pc is not None:
             cp_info.pc = cp_combined_pc
@@ -103,10 +107,22 @@ def vehicle_insert(ego_info, cp_info, position, detection_flag=False, gt_flag=Fa
         else:
             cp_id = cp_info.update_param_for_insert(cp_insert_info["extent"], cp_insert_info["center"],
                                                     -cp_insert_info["rz_degree"], ass_id=ass_id)
-    
+   
     CLogger.info(f"insert complete! insert vehicle at {position[:2]}!")
 
- 
+    # visualize after insert transformation
+    # if ego_success_flag:
+    #     vis.show_ego_and_cp_with_id(ego_info, cp_info, ego_id, cp_id)
+    #     vis.show_obj_with_car_id(ego_info, ego_id)
+    #     vis.show_obj_with_car_id(cp_info, cp_id)
+    #     vis.show_ego_and_cp_for_translation(ego_info, cp_info, ego_id, vis_corner)
+    #     vis.show_obj_for_translation(ego_info, ego_id, vis_corner)
+    #     vis_cp_corner = common.points_system_transform(vis_corner, ego_info.param['lidar_pose'], cp_info.param['lidar_pose'])
+    #     vis.show_obj_for_translation(cp_info, cp_id, vis_cp_corner)
+    # elif transformation == "rotation":
+    #     return False, -1, -1
+    # else:
+    #     return False
 
     # return ego id and cp id
     if transformation == "rotation":
@@ -121,7 +137,7 @@ def vehicle_insert(ego_info, cp_info, position, detection_flag=False, gt_flag=Fa
 
 
 def insert_obj(v2x_info, position, detection_flag=False, gt_flag=False, gt_degree=0, gt_box=None, gt_mesh=None,manual_define_degree=False,car_degree=0,objs_index=3):
-
+   
     if v2x_info.get_vehicles_nums() == 0:
         corners_lidar = None
     else:
@@ -133,7 +149,7 @@ def insert_obj(v2x_info, position, detection_flag=False, gt_flag=False, gt_degre
     else:
         position[2] = pos_z
 
-
+   
     if gt_flag and gt_mesh is not None:
         mesh_obj_initial = gt_mesh
     else:
@@ -167,6 +183,7 @@ def insert_obj(v2x_info, position, detection_flag=False, gt_flag=False, gt_degre
         mesh_obj = gt_mesh
     else:
         mesh_obj = tranform_mesh_by_pose(mesh_obj_initial, position, rz_degree)
+   
     if detection_flag:
         # is mesh on road
         onroad_flag = is_on_road(mesh_obj, v2x_info.road_pc, v2x_info.no_road_pc, position, threshold=1)
@@ -182,6 +199,7 @@ def insert_obj(v2x_info, position, detection_flag=False, gt_flag=False, gt_degre
             if not success_flag:
                 CLogger.info("insert position collision with other vehicles!")
                 return False, None, None, None
+   
     box_inserted_o3d = mesh_obj.get_minimal_oriented_bounding_box()
 
     box, angle = change_3dbox(box_inserted_o3d)
@@ -196,6 +214,7 @@ def insert_obj(v2x_info, position, detection_flag=False, gt_flag=False, gt_degre
     # half of l,w,h
     extent = box.extent / 2
     location = box.center.copy()
+   
     occ_rate_dict = occ.occlusion_rate_calculate(pcd_obj, v2x_info, position[2])
     occluded_vehicles = occ.insert_occlusion_detect(mesh_obj, v2x_info, position[2])
 
@@ -227,6 +246,7 @@ def resize_mesh_to_box(mesh, target_box):
     mesh.scale(np.min(scale_factors), center=mesh.get_center())
 
     return mesh
+
 
 def select_road_height(road_pc, position):
     road_x, road_y = road_pc[:, 0], road_pc[:, 1]
@@ -405,7 +425,7 @@ def base_combine_pcd(v2x_info, obj, box):
     mesh.compute_vertex_normals()
 
     delete_mask, shadow_mesh = occ.get_delete_points_idx(mesh, bg)
-    bg.points = o3d.utility.Vector3dVector(np.array(bg.points)[~delete_mask])  # 删掉遮挡区域点云
+    bg.points = o3d.utility.Vector3dVector(np.array(bg.points)[~delete_mask]) 
 
     occ.get_base_insert_shadowed_obj(obj, box)
 

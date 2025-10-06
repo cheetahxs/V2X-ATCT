@@ -1,10 +1,11 @@
-from flask import Flask, request, jsonify, render_template,abort   ,send_file
+from flask import Flask, request, jsonify, render_template,abort   ,send_file,Response
 import subprocess  
 import os
 # import datetime
 from datetime import datetime  
 from urllib.parse import quote, unquote
-
+from pathlib import Path
+import uuid
 
 app = Flask(__name__, static_folder='templates/assets')  
 
@@ -15,10 +16,13 @@ app = Flask(__name__, static_folder='templates/assets')
 def index():
 
     return render_template('gen_data.html')
+    # return render_template('index.html')
 
 
+current_dir = Path(__file__).parent.resolve()
+project_root = current_dir.parent
 
-ROOT_DIR_vis = '/path/to/your/generate/data/directory' 
+ROOT_DIR_vis = os.path.join(project_root,'V2X-ATCT/target_tracking/generate_scene')
 ROOT_DIR_vis = os.path.abspath(ROOT_DIR_vis)
 
 
@@ -88,12 +92,19 @@ def rq2():
 
 
 
-ROOT_DIR_exp = '/path/to/your/experiment/result/directory'
-
+ROOT_DIR_exp = os.path.join(project_root,'V2X-ATCT/target_tracking/rq1')
 ROOT_DIR_exp = os.path.abspath(ROOT_DIR_exp)
 
 @app.route('/experimentres')
 def experimentres():
+    rq = request.args.get('rq', '1')  # 默认为 '1'
+    if rq == '1':
+        ROOT_DIR_exp = os.path.join(project_root,'V2X-ATCT/target_tracking/rq1')
+        ROOT_DIR_exp = os.path.abspath(ROOT_DIR_exp)
+    else :
+        ROOT_DIR_exp = os.path.join(project_root,'V2X-ATCT/target_tracking/rq2')
+        ROOT_DIR_exp = os.path.abspath(ROOT_DIR_exp)
+
     os.chdir(ROOT_DIR_exp)
 
     current_path = request.args.get('path', ROOT_DIR_exp)
@@ -143,36 +154,123 @@ def experimentres():
     # return render_template('experiment_result.html')
 
 
-@app.route('/run_script', methods=['POST'])
-def run_script():
-    try:
-  
-        result = subprocess.run(
-            ['python', 'demo.py'],  
-            capture_output=True,  
-            text=True,            
-            check=True              
+ge_path = os.path.join(project_root,'V2X-ATCT/target_tracking/Generate_scenes.py')
+rq1_path = os.path.join(project_root,'V2X-ATCT/target_tracking/RQ1.py')
+rq2_path = os.path.join(project_root,'V2X-ATCT/target_tracking/RQ2.py')
+
+tasks = {}
+
+@app.route('/start-task', methods=['POST'])
+def start_task():
+    data = request.get_json()
+    
+    # 提取表单参数
+    scene = data.get('scene',1)
+    driving_behaviour = data.get('driving_behaviour','Vehicle_Following')
+    tracknum = data.get('tracknum',1)
+    speed = data.get('speed',60)
+    carnum = data.get('carnum',3)
+    system = data.get('system','all')
+    seednum = data.get('seednum',3)
+    selectseeds = data.get('selectseeds',1)
+    file_path = data.get('file_path','scene')
+
+    # 生成唯一任务 ID
+    job_id = str(uuid.uuid4())
+    
+    # 缓存任务参数
+    tasks[job_id] = {
+        'scene':int(scene),
+        'driving_behaviour':driving_behaviour,
+        'tracknum':int(tracknum),
+        'speed':int(speed),
+        'carnum':int(carnum),
+        'system':system,
+        'seednum':int(seednum),
+        'selectseeds':int(selectseeds),
+        'file_path':file_path
+    }
+
+
+    return jsonify({'job_id': job_id})
+
+@app.route('/output')
+def output_page():
+    return render_template('output.html')
+
+@app.route('/stream')
+def stream_output():
+    # ✅ 先读取 job_id（在请求上下文中）
+    # print("stream")
+    job_id = request.args.get('job_id')
+
+    def generate():
+        # ✅ 使用外部传进来的 job_id
+        if not job_id:
+            yield "data: ❌ lack job_id parameter\n\n"
+            return
+
+        task = tasks.get(job_id)
+        if not task:
+            yield "data: ❌ tasks dont exist\n\n"
+            return
+
+        print(task)
+
+        conda_env = 'base'
+        # conda_env = 'v2x-atct'
+
+        
+
+        if task['file_path'] == 'scene':
+            cmd = (
+                f'echo "🎯 task name: generate single scene" && '
+                f'echo "🚀 task strat: running" && '
+                f'echo "📦 conda env: v2x-atct; " && '
+                f'sleep 1 && '
+                f'conda run -n {conda_env} python {ge_path} --scene_num {task["scene"]} --driving_behaviour {task["driving_behaviour"]} --tracknum {task["tracknum"]} --speed {task["speed"]} --carnum {task["carnum"]}'
+                f'|| echo "❌ task failed!" && '
+                f'echo "OVER!"'
         )
-        
-        return jsonify({
-            'status': 'success',
-            'output': result.stdout
-        })
-    except subprocess.CalledProcessError as e:
-        
-        return jsonify({
-            'status': 'error',
-            'output': e.stderr
-        })
-    except Exception as e:
-       
-        return jsonify({
-            'status': 'error',
-            'output': str(e)
-        })
+        elif task['file_path'] == 'rq1':
+            cmd = (
+                f'echo "🎯 task name: rq1" && '
+                f'echo "🚀 task strat: running" && '
+                f'echo "📦 conda env: v2x-atct; " && '
+                f'sleep 1 && '
+                f'conda run -n {conda_env} python {rq1_path} --gen_seed_num {task["seednum"]} --insert_time {task["tracknum"]} --select_seed_num {task["selectseeds"]} --speed {task["speed"]} --carnum {task["carnum"]}'
+                f'|| echo "❌ task failed!" && '
+                f'echo "OVER!"'
+        )
+        else:
+            cmd = (
+                f'echo "🎯 task name: rq2" && '
+                f'echo "🚀 task strat: running" && '
+                f'echo "📦 conda env: v2x-atct; " && '
+                f'sleep 1 && '
+                f'conda run -n {conda_env} python {rq2_path} --seed_num {task["seednum"]} --select_seed_num {task["selectseeds"]} --speed {task["speed"]} --carnum {task["carnum"]}'
+                f'|| echo "❌ task failed!" && '
+                f'echo "OVER!"'
+        )
 
 
 
+        try:
+            with subprocess.Popen(
+                cmd,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                bufsize=1,
+                shell=True
+            ) as proc:
+                for line in proc.stdout:
+                    yield f"data: {line}\n\n"
+                yield "data: [DONE]\n\n"
+        except Exception as e:
+            yield f"data: ❌ task failed: {str(e)}\n\n"
+
+    return Response(generate(), mimetype='text/event-stream')
 
 
 
@@ -196,7 +294,7 @@ def submit_config():
         print(f"tracknum:{tracknum}")
         # print(f"roadnum:{roadnum}")
         print(f"carnum:{carnum}")
-
+    
 
         subprocess.run(
             ['python', './V2X-ATCT/target_tracking/Generate_scenes.py',
@@ -227,6 +325,9 @@ def submit_config():
             'message': str(e)
         })
 
+
+
+    
 
 
 
@@ -390,4 +491,5 @@ def view_file():
 
 
 if __name__ == '__main__':
-    app.run(debug=True,port=5000)  # http://127.0.0.1:5000
+    # app.run(debug=True,port=5000)  # http://127.0.0.1:5000
+    app.run(host='0.0.0.0', port=5000)

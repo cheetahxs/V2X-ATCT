@@ -1,5 +1,6 @@
 import os , sys
-# sys.path.append("/home/maji/Downloads/V2XTargetTracking-main/V2XGen-main/")
+# sys.path.append("/home/maji/Downloads/V2X-ATCT/V2X-ATCT/")
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import copy
 import json
 import os.path
@@ -204,6 +205,8 @@ def main(i=1,
     OP_TIMES = 1
     # load dataset config
     dataset_config = Config(dataset="v2x_dataset", scene=i)
+    print(save_path)
+    print(formatted)
     dataset_config.v2x_dataset_saved_dir = \
         os.path.join(save_path,f'{formatted}')
         

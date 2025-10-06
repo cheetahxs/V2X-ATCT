@@ -1,4 +1,6 @@
 import sys,os
+# sys.path.append('/home/wsr/Downloads/V2XGen-main/MultiTest-master')
+os.environ['PROJECT_DIR'] = '/home/wsr/Downloads/V2XGen-main/MultiTest-master'
 
 import numpy as np
 import open3d as o3d

@@ -6,13 +6,14 @@ class Config:
     """
     Dataset config
     """
-    def __init__(self, dataset="v2x_dataset", scene=1):
-        with open("config/dataset_config.yml", "r") as config_file:     
+    def __init__(self, dataset="v2x_dataset", scene=1,config_path="V2X-ATCT/config/dataset_config.yml"):
+        with open(config_path, "r") as config_file:
+        # with open("/home/maji/Downloads/V2XTargetTracking-main/V2XGen-main/config/dataset_config.yml", "r") as config_file:
             dataset_config = yaml.load(config_file, Loader=yaml.FullLoader)
 
         self.dataset_root = dataset_config.get("dataset_path", "/${your dataset path}")
         print(self.dataset_root)
-        self.select_data_num = 1993
+        self.select_data_num = 1993#场景总帧数
         self.dataset = dataset
 
         # V2V4Real test dataset
@@ -33,9 +34,9 @@ class Config:
             for i, v in index_dict.items():
                 if i < scene:
                     begin += v
-            self.begin_index = begin
-            # self.scene_data_num = index_dict[scene] - 1
-            self.scene_data_num = index_dict[scene] 
+            self.begin_index = begin#获取某个场景的索引
+            # self.scene_data_num = index_dict[scene] - 1#该场景的总数
+            self.scene_data_num = index_dict[scene] #该场景的总数
         # rq1 dataset
         elif dataset == "rq1":
             # 200 random data
@@ -45,7 +46,7 @@ class Config:
         elif dataset == "rq_eval":
             dataset = "rq2/pre_trans_dataset"
             # dataset = "rq3/test_dataset"
-        self.dataset_path = os.path.join(self.dataset_root, dataset)
+        self.dataset_path = os.path.join(self.dataset_root, dataset)#路径结合
 
         # data path
         # ego

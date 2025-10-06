@@ -11,7 +11,8 @@ vertical_resolution = 1.25
 
 def lidar_simulation(mesh_obj, sim_mode='road'):
     global lidar_config, simulation_mode
-    lidar_config = load_yaml('config/lidar_config.yml')
+    # lidar_config = load_yaml('config/lidar_config.yml')
+    lidar_config = load_yaml('/app/V2X-ATCT/config/lidar_config.yml')
     simulation_mode = sim_mode
 
     rays_args = get_ray_args()

@@ -195,6 +195,7 @@ def show_pc(v2x_info):
     render.point_size = config.lidar_config.render_point_size
     render.background_color = np.array(config.lidar_config.render_background_color)
 
+    # 创建坐标轴对象，这里设置轴长为 1 米，你可以根据需要调整
     axis = o3d.geometry.TriangleMesh.create_coordinate_frame(size=130.0)
     vis.add_geometry(axis)
 
@@ -213,15 +214,25 @@ def show_pc(v2x_info):
 
 
 def ego_pc_and_cp_pc_to_world_coordinate(vis,ego_pc,ego_lidar_pose,cp_pc,cp_lidar_pose):
+    # vis = o3d.visualization.Visualizer()
+    
 
+    # 创建坐标轴对象，这里设置轴长为 1 米，你可以根据需要调整
+    # axis = o3d.geometry.TriangleMesh.create_coordinate_frame(size=100.0)
+    # vis.add_geometry(axis)
+
+    # 提取点云的三维坐标
     points_3d_ego = ego_pc[:, :3]
     points_3d_cp = cp_pc[:, :3]
 
+    # 将点云数据转换为齐次坐标
     homogeneous_points_ego = np.hstack((points_3d_ego, np.ones((points_3d_ego.shape[0], 1))))
     homogeneous_points_cp = np.hstack((points_3d_cp, np.ones((points_3d_cp.shape[0], 1))))
 
+    # 使用 lidar_pose 矩阵进行转换
     transformed_homogeneous_points_ego = ego_lidar_pose @ homogeneous_points_ego.T
     transformed_homogeneous_points_cp = cp_lidar_pose @ homogeneous_points_cp.T
+    # 转换回三维坐标
     transformed_points_3d_ego = transformed_homogeneous_points_ego[:3].T
     transformed_points_3d_cp = transformed_homogeneous_points_cp[:3].T
 
@@ -245,7 +256,7 @@ def ego_pc_and_cp_pc_to_world_coordinate(vis,ego_pc,ego_lidar_pose,cp_pc,cp_lida
     # vis.run()
      
 
-    return merged_points
+    return merged_points#返回合并点云
 
 
 def ego_pc_and_cp_pc_to_world_coordinate_vis(ego_pc,ego_lidar_pose,cp_pc,cp_lidar_pose):
@@ -258,17 +269,22 @@ def ego_pc_and_cp_pc_to_world_coordinate_vis(ego_pc,ego_lidar_pose,cp_pc,cp_lida
     render.point_size = config.lidar_config.render_point_size
     render.background_color = np.array(config.lidar_config.render_background_color)
 
+    # 创建坐标轴对象，这里设置轴长为 1 米，你可以根据需要调整
     axis = o3d.geometry.TriangleMesh.create_coordinate_frame(size=100.0)
     vis.add_geometry(axis)
 
+    # 提取点云的三维坐标
     points_3d_ego = ego_pc[:, :3]
     points_3d_cp = cp_pc[:, :3]
 
+    # 将点云数据转换为齐次坐标
     homogeneous_points_ego = np.hstack((points_3d_ego, np.ones((points_3d_ego.shape[0], 1))))
     homogeneous_points_cp = np.hstack((points_3d_cp, np.ones((points_3d_cp.shape[0], 1))))
 
+    # 使用 lidar_pose 矩阵进行转换
     transformed_homogeneous_points_ego = ego_lidar_pose @ homogeneous_points_ego.T
     transformed_homogeneous_points_cp = cp_lidar_pose @ homogeneous_points_cp.T
+    # 转换回三维坐标
     transformed_points_3d_ego = transformed_homogeneous_points_ego[:3].T
     transformed_points_3d_cp = transformed_homogeneous_points_cp[:3].T
 
@@ -300,15 +316,20 @@ def ego_pc_to_world_coordinate_vis(pc,lidar_pose):
     render.point_size = config.lidar_config.render_point_size
     render.background_color = np.array(config.lidar_config.render_background_color)
 
+    # 创建坐标轴对象，这里设置轴长为 1 米，你可以根据需要调整
     axis = o3d.geometry.TriangleMesh.create_coordinate_frame(size=100.0)
     vis.add_geometry(axis)
 
+    # 提取点云的三维坐标
     points_3d = pc[:, :3]
 
+    # 将点云数据转换为齐次坐标
     homogeneous_points = np.hstack((points_3d, np.ones((points_3d.shape[0], 1))))
 
+    # 使用 lidar_pose 矩阵进行转换
     transformed_homogeneous_points = lidar_pose @ homogeneous_points.T
 
+    # 转换回三维坐标
     transformed_points_3d = transformed_homogeneous_points[:3].T
 
     ego_pcd = common.pc_numpy_2_o3d(transformed_points_3d)
@@ -391,9 +412,10 @@ def show_ego_and_cp_with_id(ego_info, cp_info, ego_id, cp_id):
     vis.add_geometry(ego_pcd)
     vis.add_geometry(cp_pcd)
 
+    #显示坐标系
     coordinate = o3d.geometry.TriangleMesh.create_coordinate_frame(size=10.0)
     vis.add_geometry(coordinate)
-    # vis.get_render_option().background_color = [1.0, 1.0, 1.0]
+    # vis.get_render_option().background_color = [1.0, 1.0, 1.0]#修改背景颜色为白色
 
     vis.run()
     vis.destroy_window()

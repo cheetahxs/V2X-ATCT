@@ -1,4 +1,5 @@
 import os , sys
+sys.path.append("/home/maji/Downloads/V2XGen-main/")
 import copy
 import json
 import os.path

@@ -39,17 +39,20 @@ def split_pc(labels):
     return inx_road_arr, inx_other_road_arr, inx_other_ground_arr, inx_no_road_arr
 
 
-def road_split(pc, road_pc_path, road_label_path):
+def road_split(pc, road_pc_path, road_label_path):#道路划分
     pc_path = road_pc_path
     label_path = road_label_path
 
     if os.path.exists(pc_path):
-        labels = load_road_split_labels(label_path)
+        labels = load_road_split_labels(label_path)#加载道路划分标签
         # print(labels[0])
-        road_pc = np.fromfile(pc_path, dtype=np.float32).reshape((-1, 3))
+        road_pc = np.fromfile(pc_path, dtype=np.float32).reshape((-1, 3))#道路点云
         # print(road_pc)
         inx_road_arr, inx_other_road_arr, inx_other_ground_arr, inx_no_road_arr = split_pc(labels)
         # print(inx_other_road_arr)
+        #从原始的点云数组 pc 中筛选出特定部分的点云数据，并将其赋值给新的变量 _pc_non_road 。
+        # 这里特定部分指的是由 inx_other_road_arr 、inx_other_ground_arr 和 inx_no_road_arr 
+        # 这三个数组所确定的那些点云数据元素
         _pc_non_road = pc[inx_other_road_arr + inx_other_ground_arr + inx_no_road_arr]
         # print(_pc_non_road)
     else:
